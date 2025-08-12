@@ -1,28 +1,23 @@
 import os
 
-from genai import types
+from google import genai
+
+schema_get_files_info = genai.types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
+    parameters=genai.types.Schema(
+        type=genai.types.Type.OBJECT,
+        properties={
+            "directory": genai.types.Schema(
+                type=genai.types.Type.STRING,
+                description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
+            ),
+        },
+    ),
+)
 
 
 def get_files_info(working_directory, directory="."):
-    schema_get_files_info = types.FunctionDeclaration(
-        name="get_files_info",
-        description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
-        parameters=types.Schema(
-            type=types.Type.OBJECT,
-            properties={
-                "directory": types.Schema(
-                    type=types.Type.STRING,
-                    description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
-                ),
-            },
-        ),
-    )
-
-    available_functions = types.Tool(
-        function_declerations=[
-            schema_get_files_info,
-        ]
-    )
 
     joined_directory = os.path.join(working_directory, directory)
     abs_path = os.path.abspath(joined_directory)
